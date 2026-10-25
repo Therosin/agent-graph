@@ -1,0 +1,58 @@
+---
+layout: ../layouts/PageLayout.astro
+title: Working with the template
+description: The building blocks and communication boundaries of the application template.
+---
+
+import Callout from '../components/Callout.astro';
+import StatusPanel from '../components/StatusPanel.vue';
+
+# Working with the template
+
+A small foundation for desktop applications, built with WebUI, Bun, and Astro.
+
+<Callout title="Start with the right boundary">
+  Window actions use WebUI events. Application data uses the backend API. Desktop and backend infrastructure communicate through Worker RPC.
+</Callout>
+
+## Choose a layout
+
+**BaseLayout** owns the document head, metadata, styles, and WebUI bridge script. **WindowChrome** owns the window surface, drag regions, and native controls. Window options belong on WindowChrome and are reflected in the AppSettings store.
+
+Use **AppLayout** for application sections and **PageLayout** for documentation and text-heavy pages like this one. Both compose BaseLayout and WindowChrome.
+
+## Add interactivity where it helps
+
+Use Astro components for structure and markup. Add a Vue island with `client:load` when a component needs richer interaction. Shared state lives in Nanostores; Vue reads those same stores through `@nanostores/vue`.
+
+This is a Vue island embedded in MDX, using the same backend status store as the application page:
+
+<StatusPanel client:load />
+
+## Keep requests in stores
+
+Application stores contain API requests and expose state and actions to components. AppSettings uses WebUI events for native window state. The browser preview keeps native controls disabled while the API and content remain available.
+
+## Await native operations
+
+Every Vue island has a global `$sendEvent(type, data)` method supplied by the Vue app entrypoint. Options API methods can call `await this.$sendEvent(...)`. Composition API components can import `useDesktopEvents` from `src/vue/desktop` and use the same function.
+
+Register a matching `events.on(type, async (data) => result)` handler in the desktop host. Objects are automatically JSON-encoded and decoded in both directions. A handler can await a native operation and return its result; throwing an error rejects the caller's promise. A file-picker handler can return selected paths or `null` when cancelled. Calls have no default timeout.
+
+Window state also uses this event bridge through AppSettings. Application data continues to use API requests in its own stores.
+
+## Receive backend events
+
+The backend worker can call `parent.Emit("window:dispatch", { name, detail })` to dispatch a browser CustomEvent through the desktop host. Detail is optional JSON data. Stores can listen with `onDesktopEvent` from `src/desktop/events`: update a small live value directly, or call a normal API action when notified that data changed.
+
+The status panel above demonstrates pushed uptime and request counts in desktop mode. Its Nanostore also handles `backend:status:changed` by fetching the HTTP API. Initial data is still fetched when the page mounts; live events require the current page to be connected and listening.
+
+## Extend the backend
+
+Add routes and services in `packages/backend`. Choose the libraries your application needs. Shared contracts and utilities belong in `packages/shared` and can be imported through its wildcard exports.
+
+## Development and production
+
+Run `bun run dev` for the native desktop application, or `bun run dev:web` for the browser frontend and API. Run `bun run build` followed by `bun run start` to use the built frontend in the desktop host.
+
+The build stages the frontend, backend, and target native assets, then compiles a desktop executable into `build/`. See `docs/Packaging.md` in the repository for offline packaging and cross-compilation. Installers remain application-specific work.

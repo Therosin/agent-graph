@@ -1,0 +1,11 @@
+{
+  "name": "@astro-desktop/config",
+  "description": "Configuration for Astro Desktop",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./config.ts",
+    "./*": "./*.ts"
+  }
+}

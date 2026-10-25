@@ -1,0 +1,30 @@
+---
+import '../styles/global.css';
+import WindowChrome from '../components/WindowChrome.astro';
+import { AppConfig } from 'config';
+interface Props { title?: string; description?: string; }
+const { title = AppConfig.appName, description = AppConfig.appDescription } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="application-name" content={AppConfig.appName} />
+    <meta name="application-version" content={AppConfig.appVersion} />
+    {AppConfig.buildTime && <meta name="build-time" content={AppConfig.buildTime} />}
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <!-- Served by WebUI itself through the backend proxy; never bundled by Astro. -->
+    <script is:inline src="/webui.js"></script>
+    <slot name="head" />
+  </head>
+  <body>
+    <WindowChrome>
+      <slot name="titlebar" slot="titlebar" />
+      <slot />
+    </WindowChrome>
+  </body>
+</html>

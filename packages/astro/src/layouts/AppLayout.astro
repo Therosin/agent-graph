@@ -1,0 +1,19 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { AppConfig } from 'config';
+interface Props { title?: string; }
+const { title = 'Overview' } = Astro.props;
+---
+<BaseLayout title={`${title} · ${AppConfig.appName}`}>
+    <div class="app-layout">
+      <aside class="app-sidebar">
+        <a href="/" class="app-brand">{AppConfig.appName}<span>Application template</span></a>
+        <nav aria-label="Main navigation">
+          <a href="/" aria-current={Astro.url.pathname === '/' ? 'page' : undefined}><span aria-hidden="true">▦</span> Overview</a>
+          <a href="/docs/" aria-current={Astro.url.pathname.startsWith('/docs') ? 'page' : undefined}><span aria-hidden="true">≡</span> Documentation</a>
+        </nav>
+        <div class="sidebar-footer"><span class="status-dot"></span> Your starting point</div>
+      </aside>
+      <main id="main-content" class="app-main"><slot /></main>
+    </div>
+</BaseLayout>

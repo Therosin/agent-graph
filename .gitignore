@@ -1,0 +1,32 @@
+# Dependencies and caches
+node_modules/
+.bun-cache/
+.cache/
+
+# Build output and generated Astro files
+dist/
+/build/
+/bundle/
+.astro/
+.astro-dev/
+
+# Logs and test output, including nested package folders
+.log/
+.logs/
+log/
+logs/
+*.log
+*.log.*
+test-results/
+playwright-report/
+coverage/
+
+# Local environment files (keep the documented example)
+.env
+.env.*
+!.env.example
+
+# Local editor and operating-system files
+.idea/
+.DS_Store
+Thumbs.db

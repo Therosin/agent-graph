@@ -1,0 +1,11 @@
+{
+  "name": "@astro-desktop/backend",
+  "description": "Backend component for Astro Desktop",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "config": "workspace:@astro-desktop/config@*",
+    "shared": "workspace:@astro-desktop/shared@*"
+  }
+}

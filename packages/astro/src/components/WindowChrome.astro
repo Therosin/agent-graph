@@ -1,0 +1,47 @@
+---
+import { defaultWindowSettings, type WindowSettings } from 'shared/contracts';
+import { AppConfig } from 'config';
+interface Props extends Partial<WindowSettings> {}
+const initial = Astro.props;
+const settings = { ...defaultWindowSettings, ...initial };
+---
+<div class="window-chrome" data-window-chrome data-settings={JSON.stringify(initial)} data-transparent={String(settings.transparent)}>
+  <header class="window-titlebar">
+    <span class="window-mark" aria-hidden="true">{AppConfig.appName.charAt(0).toLowerCase()}.</span>
+    <span data-window-title>{settings.title}</span>
+    <div class="window-titlebar-slot"><slot name="titlebar" /></div>
+    <span class="connection-label" data-desktop-connection>Browser preview</span>
+    <div class="window-controls" aria-label="Window controls">
+      <button type="button" data-window-command="minimize" aria-label="Minimize window" disabled hidden={!settings.minimisable}>−</button>
+      <button type="button" data-window-command="maximize" aria-label="Maximize window" disabled hidden={!settings.maximisable}>□</button>
+      <button type="button" class="window-close" data-window-command="close" aria-label="Close window" disabled hidden={!settings.closeable}>×</button>
+    </div>
+  </header>
+  <div class="window-content"><slot /></div>
+</div>
+
+<script>
+  import { $appSettings, $desktopConnection, connectAppSettings, windowCommand } from '../stores/AppSettings';
+  import type { WindowCommand } from 'shared/contracts';
+  const chrome = document.querySelector<HTMLElement>('[data-window-chrome]');
+  if (chrome) {
+    const disconnect = connectAppSettings(JSON.parse(chrome.dataset.settings ?? '{}'));
+    const buttons = [...chrome.querySelectorAll<HTMLButtonElement>('[data-window-command]')];
+    const render = () => {
+      const settings = $appSettings.get();
+      const connected = $desktopConnection.get() === 'connected';
+      chrome.dataset.transparent = String(settings.transparent);
+      chrome.querySelector('[data-window-title]')!.textContent = settings.title;
+      chrome.querySelector('[data-desktop-connection]')!.textContent = connected ? 'Desktop' : $desktopConnection.get() === 'browser' ? 'Browser preview' : 'Connecting…';
+      for (const button of buttons) {
+        const command = button.dataset.windowCommand;
+        const allowed = command === 'minimize' ? settings.minimisable : command === 'maximize' ? settings.maximisable && settings.resizable : settings.closeable;
+        button.hidden = !allowed;
+        button.disabled = !connected;
+      }
+    };
+    const subscriptions = [$appSettings.subscribe(render), $desktopConnection.subscribe(render)];
+    for (const button of buttons) button.addEventListener('click', () => void windowCommand(button.dataset.windowCommand as WindowCommand));
+    window.addEventListener('pagehide', () => { disconnect(); subscriptions.forEach(unsubscribe => unsubscribe()); }, { once: true });
+  }
+</script>

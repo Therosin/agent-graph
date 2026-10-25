@@ -1,0 +1,18 @@
+{
+  "name": "@astro-desktop/desktop",
+  "description": "webui2 based desktop application component for Astro Desktop",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "WebUI": "npm:@webui-dev/bun-webui@^2.5.7",
+    "clipboardy": "^5.3.2",
+    "config": "workspace:@astro-desktop/config@*",
+    "env-paths": "^4.0.0",
+    "nativefiledialog-for-bun": "^0.3.2",
+    "open": "^11.0.4",
+    "reveal-file": "^0.1.2",
+    "shared": "workspace:@astro-desktop/shared@*",
+    "toasted-notifier": "^10.1.0"
+  }
+}

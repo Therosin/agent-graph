@@ -1,0 +1,14 @@
+---
+import AppLayout from '../layouts/AppLayout.astro';
+import StatusPanel from '../components/StatusPanel.vue';
+import WindowSettings from '../components/WindowSettings.vue';
+import DesktopEventsDemo from '../components/DesktopEventsDemo.vue';
+import NativeToastDemo from '../components/NativeToastDemo.vue';
+import NativeFileDialogDemo from '../components/NativeFileDialogDemo.vue';
+import NativeDesktopDemo from '../components/NativeDesktopDemo.vue';
+---
+<AppLayout>
+  <header class="page-heading"><span class="eyebrow">A place to begin</span><h1>Make it your own.</h1><p>The window, the backend, and the interface are connected.<br />Build your application from here.</p></header>
+  <div class="panel-grid"><StatusPanel client:load /><WindowSettings client:load /><DesktopEventsDemo client:load /><NativeToastDemo client:load /><NativeFileDialogDemo client:load /><NativeDesktopDemo client:load /></div>
+  <section class="next-step"><div><span class="eyebrow">Built to grow</span><h2>One foundation. Your application.</h2><p>Astro for structure. Vue when you need it. Shared state with Nanostores.</p></div><a href="/docs/" class="button button-primary">Explore the template <span aria-hidden="true">→</span></a></section>
+</AppLayout>
