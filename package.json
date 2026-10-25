@@ -1,0 +1,30 @@
+{
+  "name": "astro-desktop",
+  "type": "module",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "bun scripts/dev.ts",
+    "dev:web": "bun scripts/dev.ts --web",
+    "build": "bun build.ts",
+    "build:frontend": "bun run --cwd packages/astro build",
+    "start": "bun packages/desktop/main.ts",
+    "start:web": "bun packages/backend/main.ts",
+    "check": "tsc --noEmit && bun run --cwd packages/astro check",
+    "test": "bun test tests",
+    "test:native": "bun run build:frontend && bun scripts/test-native.ts",
+    "test:dev": "bun scripts/dev.ts --smoke-test",
+    "test:e2e": "bun run build:frontend && playwright test",
+    "test:package": "bun scripts/test-package.ts",
+    "astro:astro": "bun run --cwd packages/astro astro"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@types/adm-zip": "^0.6.0",
+    "@types/bun": "^1.4.4",
+    "adm-zip": "^0.6.1",
+    "typescript": "^5.9.3"
+  }
+}

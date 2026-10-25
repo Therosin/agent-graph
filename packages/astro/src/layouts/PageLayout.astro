@@ -1,0 +1,12 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { AppConfig } from 'config';
+interface Props { title?: string; frontmatter?: { title?: string; description?: string }; }
+const title = Astro.props.title ?? Astro.props.frontmatter?.title ?? 'Documentation';
+---
+<BaseLayout title={`${title} · ${AppConfig.appName}`} description={Astro.props.frontmatter?.description}>
+    <div class="page-layout">
+      <nav class="page-nav" aria-label="Page navigation"><a href="/">← Application</a><span>Documentation</span></nav>
+      <main id="main-content" class="prose"><slot /></main>
+    </div>
+</BaseLayout>
